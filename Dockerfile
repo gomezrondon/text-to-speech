@@ -11,4 +11,4 @@ COPY web.py ./web.py
 # Install production dependencies.
 RUN pip install Flask
 
-ENTRYPOINT FLASK_APP=./web.py flask run --host=0.0.0.0
+ENTRYPOINT FLASK_APP=./web.py flask run --host=0.0.0.0 --port=8080
