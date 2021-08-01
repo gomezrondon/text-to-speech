@@ -1,4 +1,5 @@
-
+#list of python libraries
+pip list
 
 # build image
 docker build . -t flask-app

@@ -9,9 +9,9 @@ def time():
     import time
     return time.ctime()
 
-@app.route("/")
-def hello_world():
-    return "hola mundo "+time()
+@app.route("/time")
+def what_time():
+    return "the time is: "+time()
 
 
 if __name__ == "__main__":
