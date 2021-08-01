@@ -1,0 +1,10 @@
+
+
+# build image
+docker build . -t flask-app
+
+# review images
+docker images
+
+# run docker compose
+docker compose up -d

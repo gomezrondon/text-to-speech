@@ -1,0 +1,7 @@
+version: '2.1'
+
+services:
+  multi-thread:
+    image: flask-app:latest
+    ports:
+      - 8080:5000
