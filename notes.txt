@@ -9,3 +9,22 @@ docker images
 
 # run docker compose
 docker compose up -d
+
+# endpoints
+http://localhost:8080/time
+http://localhost:8080/process/<gcp-bucket>/es
+http://localhost:8080/listfiles
+
+#push image to gcp registry
+#tag image
+docker tag flask-app:latest gcr.io/<project-id>/flask-app:v4
+#push image to google registry
+docker push gcr.io/<project-id>/flask-app:v4
+
+gsutil cp text.txt gs://<gcp-bucket>/python-text.txt
+
+https://<cloud-run-app>/time
+https://<cloud-run-app>/process
+https://<cloud-run-app>/listfiles
+
+gsutil cp gs://<gcp-bucket>/python-audio.mp3 ./audio.mp3
