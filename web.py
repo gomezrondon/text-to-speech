@@ -1,7 +1,7 @@
 # https://cloud.google.com/run/docs/quickstarts/build-and-deploy/python?authuser=0
 #
 # pip install Flask
-from flask import Flask, request
+from flask import Flask, request, send_file
 from push_to_bucket import *
 from main import *
 import os
@@ -30,8 +30,8 @@ def process_file():
     print(lang)
     download_file(bucket, 'python-text.txt', inputFile)
     generate_mp3(inputFile, lang)
-    upload_to_bucket(bucket, 'audio.mp3', 'python-audio.mp3')
-    return "Audio file created "+time()
+    # upload_to_bucket(bucket, 'audio.mp3', 'python-audio.mp3')
+    return send_file("/tmp/audio.mp3",as_attachment=True)
 
 @app.route("/listfiles")
 def list_files():

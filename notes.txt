@@ -28,3 +28,6 @@ https://<cloud-run-app>/process
 https://<cloud-run-app>/listfiles
 
 gsutil cp gs://<gcp-bucket>/python-audio.mp3 ./audio.mp3
+
+#how to call the function and donwload the mp3 file
+curl http://localhost:8080/process -X POST -v -H "Content-Type:application/json" -d "{""bucket"": ""<gcp-bucket>"",""lang"": ""en""}" --output audio.mp3
