@@ -11,10 +11,10 @@ def generate_mp3(filename, lang):
     # tts = gtts.gTTS(text, lang="es")
     tts = gtts.gTTS(text, lang=lang)
     # save the audio file
-    tts.save("audio.mp3")
+    tts.save("/tmp/audio.mp3")
 
 def read_file(filename):
-    f = open(filename,"r",encoding='utf-8')
+    f = open("/tmp/"+filename,"r",encoding='utf-8')
     text = f.read()
     f.close()
     return text
@@ -32,7 +32,7 @@ def speed_change(sound, speed=1.0):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    generate_mp3('text.txt', 'es-us') #"es-us"
+    generate_mp3('text.txt', "en") #"es-us"
     # sound = AudioSegment.from_mp3("audio.mp3")
     # fast_sound = speed_change(sound, 1.25)
     # fast_sound.export("audio2.mp3", format="mp3")

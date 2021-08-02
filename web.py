@@ -1,7 +1,7 @@
 # https://cloud.google.com/run/docs/quickstarts/build-and-deploy/python?authuser=0
 #
 # pip install Flask
-from flask import Flask
+from flask import Flask, request
 from push_to_bucket import *
 from main import *
 import os
@@ -16,10 +16,15 @@ def time():
 def what_time():
     return "the time is: "+time()
 
-@app.route("/process/<bucket>/<lang>")
-def process_file(bucket, lang):
+@app.route("/process", methods=['POST'])
+def process_file():
+    json_body = request.get_json()
+    bucket = json_body['bucket']
+    lang = json_body['lang']
+
     if lang == "es":
         lang = "es-us"
+
     inputFile = 'text.txt'
     print(bucket)
     print(lang)
