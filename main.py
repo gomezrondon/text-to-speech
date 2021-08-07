@@ -1,40 +1,71 @@
-# pip3 install gTTS pyttsx3 playsound
-# https://www.thepythoncode.com/article/convert-text-to-speech-in-python#Online_Text_to_speech
-import gtts
-# from playsound import playsound
-# pip install pydub
-# from pydub import AudioSegment
+# https://cloud.google.com/run/docs/quickstarts/build-and-deploy/python?authuser=0
+#
+# pip install Flask
+from flask import Flask, request, send_file
+from push_to_bucket import *
+from old_main import *
+import os
 
-def generate_mp3(filename, lang):
-    # Use a breakpoint in the code line below to debug your script.
-    text = read_file(filename)
-    # tts = gtts.gTTS(text, lang="es")
-    tts = gtts.gTTS(text, lang=lang)
-    # save the audio file
-    tts.save("/tmp/audio.mp3")
+app = Flask(__name__)
 
-def read_file(filename):
-    f = open("/tmp/"+filename,"r",encoding='utf-8')
-    text = f.read()
-    f.close()
-    return text
+def time():
+    import time
+    return time.ctime()
 
-def speed_change(sound, speed=1.0):
-    # Manually override the frame_rate. This tells the computer how many
-    # samples to play per second
-    sound_with_altered_frame_rate = sound._spawn(sound.raw_data, overrides={
-         "frame_rate": int(sound.frame_rate * speed)
-      })
-     # convert the sound with altered frame rate to a standard frame rate
-     # so that regular playback programs will work right. They often only
-     # know how to play audio at standard frame rate (like 44.1k)
-    return sound_with_altered_frame_rate.set_frame_rate(sound.frame_rate)
+@app.route("/time")
+def what_time():
+    return "the time is: "+time()
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    generate_mp3('text.txt', "en") #"es-us"
-    # sound = AudioSegment.from_mp3("audio.mp3")
-    # fast_sound = speed_change(sound, 1.25)
-    # fast_sound.export("audio2.mp3", format="mp3")
+@app.route("/process", methods=['POST'])
+def process_file():
+    json_body = request.get_json()
+    print(">>>>>"+str(json_body))
+    bucket = json_body['bucket']
+    lang = json_body['lang']
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    if lang == "es":
+        lang = "es-us"
+
+    inputFile = 'text.txt'
+    print(bucket)
+    print(lang)
+    download_file(bucket, 'python-text.txt', inputFile)
+    generate_mp3(inputFile, lang)
+    # upload_to_bucket(bucket, 'audio.mp3', 'python-audio.mp3')
+    return send_file("/tmp/audio.mp3",as_attachment=True)
+
+@app.route("/v2/process", methods=['POST'])
+def process_file2():
+    json_body = request.get_json()
+    print(">>>>>"+str(json_body))
+    bucket = json_body['bucket']
+    lang = json_body['lang']
+    bucket_file = json_body['file']
+
+    if lang == "es":
+        lang = "es-us"
+
+    #local name of the file
+    inputFile = "text.txt"
+    download_file(bucket, bucket_file, inputFile)
+    generate_mp3(inputFile, lang)
+    hasValue = str(hash(time()))
+    hasValue = hasValue[1:11]
+    ouputName = 'audio-'+hasValue+'.mp3'
+    upload_to_bucket(bucket, 'audio.mp3', ouputName)
+    return '{"file-name": "'+ouputName+'" }'
+
+
+@app.route("/listfiles")
+def list_files():
+    names = []
+    files = [f for f in os.listdir('.') if os.path.isfile(f)]
+    for f in files:
+        names.append(f)
+    return str(names)
+
+
+# do something
+
+if __name__ == "__main__":
+    app.run(debug=True,host="0.0.0.0", port=8080)

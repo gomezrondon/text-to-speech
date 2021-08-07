@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
-COPY web.py ./web.py
-COPY main.py ./main.py
+COPY main.py ./web.py
+COPY old_main.py ./old_main.py
 COPY push_to_bucket.py ./push_to_bucket.py
 COPY requirements.txt ./requirements.txt
 
