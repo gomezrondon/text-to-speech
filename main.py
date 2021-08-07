@@ -5,6 +5,7 @@ from flask import Flask, request, send_file
 from push_to_bucket import *
 from old_main import *
 import os
+import json
 
 app = Flask(__name__)
 
@@ -53,7 +54,10 @@ def process_file2():
     hasValue = hasValue[1:11]
     ouputName = 'audio-'+hasValue+'.mp3'
     upload_to_bucket(bucket, 'audio.mp3', ouputName)
-    return '{"file-name": "'+ouputName+'" }'
+    data = {
+        "file-name": ouputName
+    }
+    return json.dumps(data)
 
 
 @app.route("/listfiles")
